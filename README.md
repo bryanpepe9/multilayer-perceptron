@@ -69,7 +69,7 @@ Each package (`util`, `neural`, `validation`) has unit tests covering its public
 
 ## Notable fixes made to get this working
 
-This project didn't compile out of the box - the import paths pointed at a different module (`github.com/made2591/go-perceptron-go`) than the one declared in `go.mod`, and the `validation` package referenced from `main.go` didn't exist in the repo at all. Beyond making it compile, a few functional bugs were fixed along the way:
+This project didn't compile out of the box - the import paths pointed at a different module than the one declared in `go.mod`, and the `validation` package referenced from `main.go` didn't exist in the repo at all. Beyond making it compile, a few functional bugs were fixed along the way:
 
 - **Sigmoid derivative was a constant.** `SigmoidalTransferDerivate` returned `1.0` unconditionally instead of `d * (1 - d)`, which silently broke gradient scaling during backpropagation.
 - **Weight initialization was near-zero.** Neurons were initialized with a `1e-13` scaling factor, so every neuron in a layer started out virtually identical. Since backprop then nudged them by nearly the same amount, they never differentiated - capping the network below what a single neuron could do and making it unable to learn problems like XOR that require a genuine hidden layer. Replaced with Xavier/Glorot-style scaling (`stddev = 1/sqrt(fan-in)`).
